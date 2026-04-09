@@ -1,0 +1,16 @@
+# created by virtualenv automatically
+*
+# Данные базы данных (нельзя отправлять в репозиторий)
+qdrant_data/
+
+# Окружение Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Настройки PyCharm
+.idea/
+
+# Секретные ключи (если появятся)
+.env
