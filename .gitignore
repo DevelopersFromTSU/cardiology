@@ -1,6 +1,4 @@
-# created by virtualenv automatically
-*
-# Данные базы данных (нельзя отправлять в репозиторий)
+# Данные базы данных
 qdrant_data/
 
 # Окружение Python
@@ -9,8 +7,13 @@ venv/
 __pycache__/
 *.py[cod]
 
-# Настройки PyCharm
+# Настройки IDE (PyCharm)
 .idea/
 
-# Секретные ключи (если появятся)
+# Секретные переменные
 .env
+
+# Игнорируем всё содержимое папки result внутри chunks
+chunks/result/*
+# Оставляем саму папку в репозитории (необязательно, но полезно)
+!chunks/result/.gitkeep
