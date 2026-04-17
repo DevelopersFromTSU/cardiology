@@ -1,4 +1,5 @@
 version: '3.8'
+name: cardiology
 services:
   qdrant:
     image: qdrant/qdrant:latest
