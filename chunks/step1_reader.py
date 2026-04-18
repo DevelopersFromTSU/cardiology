@@ -3,22 +3,37 @@ import fitz  # Библиотека PyMuPDF
 
 def get_raw_text_from_pdf(pdf_path, page_num):
     """
-    Открывает PDF, достает текст со страницы + берет нахлест со следующей.
+    Открывает PDF, достает текст текущей страницы,
+    а также захватывает контекст до и после неё.
     """
     doc = fitz.open(pdf_path)
+    total_pages = len(doc)
 
-    # 1. Берем текст текущей страницы
+    # 1. НАХЛЁСТ НАЗАД: Берем конец предыдущей страницы
+    prev_context = ""
+    if page_num > 0:
+        prev_page = doc.load_page(page_num - 1)
+        # Берем последние 600 символов (чуть больше, для запаса)
+        prev_text_full = prev_page.get_text()
+        prev_context = prev_text_full[-600:]
+
+        # 2. ОСНОВНОЙ ТЕКТ: Берем текст текущей страницы
     page = doc.load_page(page_num)
-    raw_text = page.get_text()
+    current_text = page.get_text()
 
-    # 2. УМНЫЙ НАХЛЕСТ: Заглядываем на следующую страницу (если она есть)
-    if page_num + 1 < len(doc):
+    # 3. НАХЛЁСТ ВПЕРЕД: Берем начало следующей страницы
+    next_context = ""
+    if page_num + 1 < total_pages:
         next_page = doc.load_page(page_num + 1)
-        # Берем первые 500 символов со следующей страницы
-        next_page_start = next_page.get_text()[:500]
-        # Приклеиваем их к текущему тексту
-        raw_text += " \n " + next_page_start
+        next_context = next_page.get_text()[:600]
 
     doc.close()
 
-    return raw_text
+    # Собираем все в одну структуру с четкими маркерами
+    combined_content = (
+        f"--- НАЧАЛО ПРЕДЫДУЩЕЙ СТРАНИЦЫ (КОНТЕКСТ) ---\n{prev_context}\n"
+        f"--- ТЕКСТ ТЕКУЩЕЙ СТРАНИЦЫ ---\n{current_text}\n"
+        f"--- НАЧАЛО СЛЕДУЮЩЕЙ СТРАНИЦЫ (КОНТЕКСТ) ---\n{next_context}"
+    )
+
+    return combined_content
